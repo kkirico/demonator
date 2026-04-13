@@ -29,7 +29,6 @@ export interface RawWorkParseResultsTable {
   author: string | null;
   description: string | null;
   keywords: string[] | null;
-  rating: number | null;
   episode_count: number | null;
   cover_image_url: string | null;
   introduction_images: string[] | null;

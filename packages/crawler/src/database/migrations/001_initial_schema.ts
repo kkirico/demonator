@@ -47,7 +47,6 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .addColumn('author', 'varchar(255)')
     .addColumn('description', 'text')
     .addColumn('keywords', sql`text[]`)
-    .addColumn('rating', sql`decimal(3,2)`)
     .addColumn('episode_count', 'integer')
     .addColumn('cover_image_url', 'text')
     .addColumn('introduction_images', sql`text[]`)

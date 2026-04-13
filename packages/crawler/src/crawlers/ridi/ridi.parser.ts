@@ -1,4 +1,4 @@
-import { Locator, Page } from 'playwright';
+import { Page } from 'playwright';
 import { db } from '../../database/kysely';
 import type { ParsedWorkData } from '../../schemas/raw.schema';
 
@@ -9,7 +9,7 @@ const STAT_RE = /^(평점|리뷰|별점)\d+/;
 
 export class RidiParser {
   async parseFromPage(page: Page): Promise<ParsedWorkData> {
-    const [title, coverImageUrl, author, description, keywords, introductionImages, rating, episodeCount] =
+    const [title, coverImageUrl, author, description, keywords, introductionImages, episodeCount] =
       await Promise.all([
         this.extractTitle(page),
         this.metaContent(page, 'property', 'og:image'),
@@ -17,11 +17,10 @@ export class RidiParser {
         this.extractDescription(page),
         this.extractKeywords(page),
         this.extractIntroductionImages(page),
-        this.extractRating(page),
         this.extractEpisodeCount(page),
       ]);
 
-    return { title, author, description, keywords, rating, episodeCount, coverImageUrl, introductionImages };
+    return { title, author, description, keywords, episodeCount, coverImageUrl, introductionImages };
   }
 
   private async metaContent(page: Page, attr: string, value: string): Promise<string | undefined> {
@@ -95,18 +94,11 @@ export class RidiParser {
     return srcs;
   }
 
-  private async extractRating(page: Page): Promise<number | undefined> {
-    const metaKw = await this.metaContent(page, 'name', 'keywords');
-    if (!metaKw) return undefined;
-    const match = metaKw.match(/평점(\d+)점/);
-    return match ? parseInt(match[1], 10) : undefined;
-  }
-
   private async extractEpisodeCount(page: Page): Promise<number | undefined> {
     const headerText = await page.locator('#ISLANDS__Header').textContent().catch(() => null);
     if (headerText) {
-      const match = headerText.match(/총\s*(\d+)화/);
-      if (match) return parseInt(match[1], 10);
+      const match = headerText.match(/총\s*([\d,]+)화/);
+      if (match) return parseInt(match[1].replace(/,/g, ''), 10);
     }
     return undefined;
   }
@@ -121,7 +113,6 @@ export class RidiParser {
         author: data.author ?? null,
         description: data.description ?? null,
         keywords: data.keywords.length > 0 ? data.keywords : null,
-        rating: data.rating ?? null,
         episode_count: data.episodeCount ?? null,
         cover_image_url: data.coverImageUrl ?? null,
         introduction_images:
