@@ -5,4 +5,3 @@ import { GameModule } from './game/game.module';
   imports: [GameModule],
 })
 export class AppModule {}
-ㅁ

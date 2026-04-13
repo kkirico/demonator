@@ -16,6 +16,8 @@ export interface FeaturesTable {
   name: string;
   category: string;
   display_name: string;
+  keywords: string[] | null;
+  questions: string[] | null;
   mutual_exclusive_group: string | null;
   created_at: Generated<Date>;
 }

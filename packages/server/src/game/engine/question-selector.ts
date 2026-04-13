@@ -64,6 +64,10 @@ export function selectNextQuestion(
   return pool[Math.floor(Math.random() * pool.length)].feature;
 }
 
+function pickRandom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 const QUESTION_TEMPLATES: Record<string, string> = {
   genre: '이 작품은 {name} 장르인가요?',
   setting: '배경이 {name}인가요?',
@@ -74,6 +78,9 @@ const QUESTION_TEMPLATES: Record<string, string> = {
 };
 
 export function buildQuestionText(feature: CachedFeature): string {
+  if (feature.questions.length > 0) {
+    return pickRandom(feature.questions);
+  }
   const template =
     QUESTION_TEMPLATES[feature.category] ?? '이 작품에 {name} 특징이 있나요?';
   return template.replace('{name}', feature.displayName);

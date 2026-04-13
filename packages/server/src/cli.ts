@@ -41,6 +41,7 @@ async function loadCache(): Promise<CliCache> {
   for (const f of featureRows) {
     features.set(f.id, {
       id: f.id, name: f.name, category: f.category, displayName: f.display_name,
+      keywords: (f as any).keywords ?? [], questions: (f as any).questions ?? [],
     });
   }
 

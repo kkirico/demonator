@@ -34,11 +34,22 @@ export class Publisher {
             name: def.name,
             category: def.category,
             display_name: def.displayName,
+            keywords: def.keywords,
+            questions: def.questions ?? [],
             mutual_exclusive_group: def.mutualExclusiveGroup ?? null,
           })
           .execute();
 
         console.log(`Created feature: ${def.name}`);
+      } else {
+        await db
+          .updateTable('features')
+          .set({
+            keywords: def.keywords,
+            questions: def.questions ?? [],
+          })
+          .where('name', '=', def.name)
+          .execute();
       }
     }
   }

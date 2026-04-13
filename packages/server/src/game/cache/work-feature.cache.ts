@@ -16,6 +16,8 @@ export interface CachedFeature {
   name: string;
   category: string;
   displayName: string;
+  keywords: string[];
+  questions: string[];
 }
 
 @Injectable()
@@ -57,6 +59,8 @@ export class WorkFeatureCache implements OnModuleInit {
         name: f.name,
         category: f.category,
         displayName: f.display_name,
+        keywords: f.keywords ?? [],
+        questions: f.questions ?? [],
       });
     }
 

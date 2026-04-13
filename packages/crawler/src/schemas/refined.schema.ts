@@ -42,6 +42,7 @@ export const FeatureDefinitionSchema = z.object({
   category: FeatureCategorySchema,
   displayName: z.string(),
   keywords: z.array(z.string()),
+  questions: z.array(z.string()).optional(),
   mutualExclusiveGroup: z.string().optional(),
 });
 export type FeatureDefinition = z.infer<typeof FeatureDefinitionSchema>;
