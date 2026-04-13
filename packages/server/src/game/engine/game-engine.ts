@@ -3,6 +3,8 @@ import { WorkFeatureCache } from '../cache/work-feature.cache';
 import { SessionStore } from '../../session/session.store';
 import {
   selectNextQuestion,
+  selectTiebreakerQuestion,
+  detectTiedCandidates,
   buildQuestionText,
 } from './question-selector';
 import { updateScores, getTopCandidates } from './score-updater';
@@ -124,7 +126,17 @@ export class GameEngine {
     if (top[0].score >= GUESS_THRESHOLD) return true;
 
     const top3Sum = top.reduce((sum, c) => sum + c.score, 0);
-    if (top3Sum >= TOP3_THRESHOLD) return true;
+    if (top3Sum >= TOP3_THRESHOLD) {
+      const tiedIds = detectTiedCandidates(top);
+      if (tiedIds) {
+        const tb = selectTiebreakerQuestion(session, this.cache, tiedIds);
+        if (tb) {
+          session.pendingFeatureId = tb.id;
+          return false;
+        }
+      }
+      return true;
+    }
 
     return false;
   }

@@ -1,5 +1,6 @@
 import type { GameSession } from '../../session/session.types';
 import type { WorkFeatureCache, CachedFeature } from '../cache/work-feature.cache';
+import type { RankedWork } from './score-updater';
 
 const CATEGORY_PRIORITY: Record<string, number> = {
   genre: 1.0,
@@ -15,8 +16,8 @@ export interface ScoredFeature {
   splitScore: number;
 }
 
-/** How many top-scoring features to randomly pick from */
 const TOP_K = 5;
+const TIE_RATIO = 0.15;
 
 /**
  * Selects the next question by scoring every unused feature on how evenly
@@ -62,6 +63,59 @@ export function selectNextQuestion(
   scored.sort((a, b) => b.splitScore - a.splitScore);
   const pool = scored.slice(0, Math.min(TOP_K, scored.length));
   return pool[Math.floor(Math.random() * pool.length)].feature;
+}
+
+/**
+ * Detects tied top candidates whose scores are within TIE_RATIO of the leader.
+ * Returns the tied work IDs, or null if no meaningful tie.
+ */
+export function detectTiedCandidates(
+  topCandidates: RankedWork[],
+): number[] | null {
+  if (topCandidates.length < 2) return null;
+
+  const leader = topCandidates[0].score;
+  if (leader < 1e-10) return null;
+
+  const tied = topCandidates.filter(
+    (c) => (leader - c.score) / leader <= TIE_RATIO,
+  );
+
+  return tied.length >= 2 ? tied.map((c) => c.workId) : null;
+}
+
+/**
+ * Picks the feature that best differentiates the tied candidates.
+ * Scores each feature by max confidence spread among the tied works.
+ */
+export function selectTiebreakerQuestion(
+  session: GameSession,
+  cache: WorkFeatureCache,
+  tiedWorkIds: number[],
+): CachedFeature | null {
+  const allFeatures = cache.getAllFeatures();
+  const candidates = allFeatures.filter(
+    (f) => !session.askedFeatures.has(f.id),
+  );
+
+  if (candidates.length === 0) return null;
+
+  let bestFeature: CachedFeature | null = null;
+  let bestSpread = -1;
+
+  for (const feature of candidates) {
+    const confs = tiedWorkIds.map((wId) =>
+      cache.getConfidence(wId, feature.id),
+    );
+    const spread = Math.max(...confs) - Math.min(...confs);
+
+    if (spread > bestSpread) {
+      bestSpread = spread;
+      bestFeature = feature;
+    }
+  }
+
+  return bestFeature;
 }
 
 function pickRandom<T>(arr: T[]): T {

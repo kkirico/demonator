@@ -5,7 +5,7 @@ config({ path: resolve(__dirname, '../../../.env') });
 import * as readline from 'readline';
 import { db } from './database/kysely';
 import { closeDb } from './database/kysely';
-import { selectNextQuestion, buildQuestionText } from './game/engine/question-selector';
+import { selectNextQuestion, selectTiebreakerQuestion, detectTiedCandidates, buildQuestionText } from './game/engine/question-selector';
 import { updateScores, getTopCandidates } from './game/engine/score-updater';
 import { DEFAULT_ABSENT } from './game/cache/work-feature.cache';
 import type { CachedWork, CachedFeature } from './game/cache/work-feature.cache';
@@ -214,12 +214,26 @@ async function main() {
       showTop(session, cache, 3);
 
       const top = getTopCandidates(session, 3, session.guessedWorkIds);
-      const shouldGuess =
-        session.questionCount >= MAX_Q ||
-        (top.length > 0 && top[0].score >= GUESS_TH) ||
-        (top.length > 0 && top.reduce((s, c) => s + c.score, 0) >= TOP3_TH);
+      const reachedMaxQ = session.questionCount >= MAX_Q;
+      const leaderStrong = top.length > 0 && top[0].score >= GUESS_TH;
+      const top3Concentrated = top.length > 0 && top.reduce((s, c) => s + c.score, 0) >= TOP3_TH;
 
-      if (shouldGuess) { session.status = 'guessing'; break; }
+      if (reachedMaxQ || leaderStrong) {
+        session.status = 'guessing'; break;
+      }
+
+      if (top3Concentrated) {
+        const tiedIds = detectTiedCandidates(top);
+        if (tiedIds) {
+          const tb = selectTiebreakerQuestion(session, engineCache, tiedIds);
+          if (tb) {
+            w(`${D}  ⚡ 상위 후보 동률 → 핵심 질문${R}`);
+            session.pendingFeatureId = tb.id;
+            continue;
+          }
+        }
+        session.status = 'guessing'; break;
+      }
 
       const next = selectNextQuestion(session, engineCache);
       if (!next) { session.status = 'guessing'; break; }
@@ -254,6 +268,15 @@ async function main() {
       w(`   ${B}${GR}「 ${gw.title} 」${R}`);
       if (gw.author) w(`   ${D}저자: ${gw.author}${R}`);
       w(`   ${D}확신도: ${YE}${pct}%${R}`);
+      blank();
+      const top3 = getTopCandidates(session, 3);
+      w(`${D}── 상위 후보 ──${R}`);
+      for (let i = 0; i < top3.length; i++) {
+        const wk = cache.getWork(top3[i].workId);
+        const p = (top3[i].score * 100).toFixed(1);
+        const mark = top3[i].workId === top[0].workId ? `${GR}▶ ` : '  ';
+        w(`${D}  ${mark}${i + 1}. ${wk?.title ?? '?'} (${YE}${p}%${R}${D})${wk?.author ? ` - ${wk.author}` : ''}${R}`);
+      }
       blank();
       w(`${B}맞나요?${R} ${D}(1=예 / 2=아니오)${R}`);
 
