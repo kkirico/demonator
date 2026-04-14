@@ -69,7 +69,7 @@ export class FeatureRefiner {
     confidence: unknown;
   }): RejectionReason | null {
     if (candidate.source === 'enrichment_negative') {
-      return 'low_confidence';
+      return null;
     }
 
     const confidence = Number(candidate.confidence ?? 0);

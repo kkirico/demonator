@@ -1,6 +1,8 @@
 import { db } from '../database/kysely';
 import type { FeatureCandidate, FeatureDefinition } from '../schemas/refined.schema';
 
+export const NEGATIVE_CONFIDENCE = 0.02;
+
 // Feature definitions - keyword to feature mapping
 // 리디북스 키워드 기반으로 구성
 const FEATURE_DEFINITIONS: FeatureDefinition[] = [
@@ -219,7 +221,7 @@ export class FeatureExtractor {
             candidates.push({
               featureName: def.name,
               source: 'enrichment_negative',
-              confidence: 0,
+              confidence: NEGATIVE_CONFIDENCE,
             });
             break;
           }
