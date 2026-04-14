@@ -2,14 +2,21 @@ import type { GameSession } from '../../session/session.types';
 import type { WorkFeatureCache, CachedFeature } from '../cache/work-feature.cache';
 import type { RankedWork } from './score-updater';
 
-const CATEGORY_PRIORITY: Record<string, number> = {
-  genre: 1.0,
-  setting: 0.95,
-  protagonist: 0.9,
-  tone: 0.85,
-  character: 0.8,
-  theme: 0.75,
-};
+const PHASE_WEIGHTS: Record<string, number>[] = [
+  // Phase 1 (Q0~2): 장르/배경으로 큰 분류
+  { genre: 1.5, setting: 1.3, protagonist: 1.0, tone: 0.6, character: 0.4, theme: 0.4 },
+  // Phase 2 (Q5~9): 주인공/분위기로 중간 범위 좁히기
+  { genre: 0.8, setting: 0.9, protagonist: 1.2, tone: 1.1, character: 1.0, theme: 1.0 },
+  // Phase 3 (Q10+): 균등, 세부 특성으로 특정
+  { genre: 0.8, setting: 0.8, protagonist: 1.0, tone: 1.0, character: 1.1, theme: 1.1 },
+];
+
+const Phase1 = 3
+const Phase2 = 10;
+function getCategoryWeight(category: string, questionCount: number): number {
+  const phaseIdx = questionCount < Phase1 ? 0 : questionCount < Phase2 ? 1 : 2;
+  return PHASE_WEIGHTS[phaseIdx][category] ?? 0.8;
+}
 
 export interface ScoredFeature {
   feature: CachedFeature;
@@ -61,8 +68,8 @@ export function selectNextQuestion(
 
     const splitScore = 1 - Math.abs(yesWeight - noWeight) / total;
     const coverage = totalWeight > 0 ? knownWeight / totalWeight : 0;
-    const categoryBonus = CATEGORY_PRIORITY[feature.category] ?? 0.5;
-    const finalScore = splitScore * coverage + categoryBonus * 0.01;
+    const categoryWeight = getCategoryWeight(feature.category, session.questionCount);
+    const finalScore = splitScore * coverage * categoryWeight;
 
     scored.push({ feature, splitScore: finalScore });
   }

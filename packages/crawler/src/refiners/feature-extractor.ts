@@ -80,7 +80,7 @@ const FEATURE_DEFINITIONS: FeatureDefinition[] = [
   { name: 'theme_family', category: 'theme', displayName: '가족', keywords: ['가족', '육아', '자녀', '육아물'], questions: ['가족이나 육아가 중요한 테마인가요?'] },
   { name: 'theme_contract', category: 'theme', displayName: '계약', keywords: ['계약', '계약결혼', '계약 결혼', '가짜 연인', '계약연애/결혼'], questions: ['계약 결혼이나 가짜 연인 설정이 있나요?'] },
   { name: 'theme_secret', category: 'theme', displayName: '비밀/정체숨김', keywords: ['비밀', '정체', '숨김', '가면', '비밀신분'], questions: ['정체를 숨기거나 비밀이 있는 설정인가요?'] },
-  { name: 'theme_misunderstanding', category: 'theme', displayName: '오해', keywords: ['오해', '착각', '엇갈림', '오해/착각', '착각물', '삽질물'], questions: ['오해나 착각 때문에 엇갈리는 이야기인가요?'] },
+  { name: 'theme_misunderstanding', category: 'theme', displayName: '오해', keywords: ['오해', '착각', '엇갈림', '오해/착각', '착각물', '삽질물']},
   { name: 'theme_redemption', category: 'theme', displayName: '구원', keywords: ['구원', '치유', '위로'], questions: ['서로를 구원하거나 치유하는 이야기인가요?'] },
   { name: 'theme_survival', category: 'theme', displayName: '생존', keywords: ['생존', '서바이벌', '살아남기', '생존물'], questions: ['살아남는 것이 핵심인 서바이벌물인가요?'] },
   { name: 'theme_first_love', category: 'theme', displayName: '첫사랑', keywords: ['첫사랑'], questions: ['첫사랑이 중요한 소재인가요?'] },
