@@ -44,11 +44,15 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  min-width: 280px;
-  max-width: 400px;
+  width: 380px;
 }
 
-.questionMode,
+.questionMode {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .guessMode {
   display: flex;
   flex-direction: column;
@@ -56,11 +60,36 @@
   animation: slideIn 0.4s ease-out;
 }
 
+.questionCard {
+  width: 380px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(8px);
+}
+
 .questionText {
   margin: 0;
-  font-size: 1.15rem;
-  font-weight: 500;
-  color: #1a1a2e;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.6;
+  animation: textFade 0.3s ease-out;
+}
+
+@keyframes textFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .guessText {
@@ -99,11 +128,47 @@
   color: #666;
 }
 
-.answerButtons,
+.answerButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .guessButtons {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.answerBtn {
+  width: 380px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.answerBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.answerBtn:active:not(:disabled) {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.answerBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .btn {
@@ -151,8 +216,11 @@
   }
 
   .interactionSide {
-    min-width: auto;
     width: 100%;
-    max-width: 100%;
+  }
+
+  .questionCard,
+  .answerBtn {
+    width: 100%;
   }
 }

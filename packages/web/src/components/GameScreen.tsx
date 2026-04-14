@@ -104,31 +104,33 @@ export function GameScreen({
               </div>
             </div>
           ) : question ? (
-            <div className={styles.questionMode} key={`q-${question.featureId}-${questionNumber}`}>
-              <SpeechBubble>
-                <p className={styles.questionText}>{question.text}</p>
-              </SpeechBubble>
+            <div className={styles.questionMode}>
+              <div className={styles.questionCard}>
+                <p className={styles.questionText} key={`q-${question.featureId}-${questionNumber}`}>
+                  {question.text}
+                </p>
+              </div>
               <div className={styles.answerButtons}>
                 <button
-                  className={styles.btn}
+                  className={styles.answerBtn}
                   onClick={() => handleAnswer('yes')}
                   disabled={loading}
                 >
-                  예
+                  맞다냥
                 </button>
                 <button
-                  className={styles.btn}
+                  className={styles.answerBtn}
                   onClick={() => handleAnswer('no')}
                   disabled={loading}
                 >
-                  아니오
+                  아니다냥
                 </button>
                 <button
-                  className={styles.btn}
+                  className={styles.answerBtn}
                   onClick={() => handleAnswer('maybe')}
                   disabled={loading}
                 >
-                  모르겠어요
+                  모르겠다냥
                 </button>
               </div>
             </div>
