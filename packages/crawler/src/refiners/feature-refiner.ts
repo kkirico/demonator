@@ -1,5 +1,5 @@
 import { db } from '../database/kysely';
-import type { FeatureCandidate, FeatureRejection, RejectionReason } from '../schemas/refined.schema';
+import type { FeatureCandidate, FeatureRejection, FeatureSource, RejectionReason } from '../schemas/refined.schema';
 
 export interface RefinementResult {
   accepted: FeatureCandidate[];
@@ -7,7 +7,6 @@ export interface RefinementResult {
 }
 
 export class FeatureRefiner {
-  private readonly minConfidence = 0.5;
   private readonly tooCommonFeatures = new Set<string>([
     // Features that are too generic
   ]);
@@ -36,7 +35,7 @@ export class FeatureRefiner {
       } else {
         accepted.push({
           featureName: candidate.feature_name,
-          source: candidate.source as 'keyword' | 'description' | 'ml',
+          source: candidate.source as FeatureSource,
           confidence: Number(candidate.confidence ?? 0),
         });
       }
@@ -65,14 +64,9 @@ export class FeatureRefiner {
 
   private checkRejection(candidate: {
     feature_name: string;
+    source: string | null;
     confidence: unknown;
   }): RejectionReason | null {
-    const confidence = Number(candidate.confidence ?? 0);
-
-    if (confidence < this.minConfidence) {
-      return 'low_confidence';
-    }
-
     if (this.tooCommonFeatures.has(candidate.feature_name)) {
       return 'too_common';
     }
@@ -103,7 +97,7 @@ export class FeatureRefiner {
       .filter((c) => !rejectedNames.has(c.feature_name))
       .map((c) => ({
         featureName: c.feature_name,
-        source: c.source as 'keyword' | 'description' | 'ml',
+        source: c.source as FeatureSource,
         confidence: Number(c.confidence ?? 0),
       }));
   }

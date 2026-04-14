@@ -40,20 +40,29 @@ export function selectNextQuestion(
   for (const feature of candidates) {
     let yesWeight = 0;
     let noWeight = 0;
+    let knownWeight = 0;
+    let totalWeight = 0;
 
     for (const [workId, score] of session.workScores) {
       if (score < 1e-10) continue;
+      totalWeight += score;
       const conf = cache.getConfidence(workId, feature.id);
       yesWeight += score * conf;
       noWeight += score * (1 - conf);
+
+      const featureMap = cache.getWorkFeatureMap(workId);
+      if (featureMap?.has(feature.id)) {
+        knownWeight += score;
+      }
     }
 
     const total = yesWeight + noWeight;
     if (total === 0) continue;
 
     const splitScore = 1 - Math.abs(yesWeight - noWeight) / total;
+    const coverage = totalWeight > 0 ? knownWeight / totalWeight : 0;
     const categoryBonus = CATEGORY_PRIORITY[feature.category] ?? 0.5;
-    const finalScore = splitScore + categoryBonus * 0.01;
+    const finalScore = splitScore * coverage + categoryBonus * 0.01;
 
     scored.push({ feature, splitScore: finalScore });
   }

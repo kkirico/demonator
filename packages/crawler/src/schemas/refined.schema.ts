@@ -3,7 +3,13 @@ import { z } from 'zod';
 export const FeatureRunStatusSchema = z.enum(['pending', 'completed', 'failed']);
 export type FeatureRunStatus = z.infer<typeof FeatureRunStatusSchema>;
 
-export const FeatureSourceSchema = z.enum(['keyword', 'description', 'ml']);
+export const FeatureSourceSchema = z.enum([
+  'keyword',
+  'description',
+  'ml',
+  'enrichment_keyword',
+  'enrichment_negative',
+]);
 export type FeatureSource = z.infer<typeof FeatureSourceSchema>;
 
 export const RejectionReasonSchema = z.enum([

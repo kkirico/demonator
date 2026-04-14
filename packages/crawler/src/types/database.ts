@@ -35,6 +35,14 @@ export interface RawWorkParseResultsTable {
   parsed_at: Generated<Date>;
 }
 
+export interface RawWorkEnrichmentsTable {
+  id: Generated<number>;
+  external_id: string;
+  tags: string[] | null;
+  negative_tags: string[] | null;
+  created_at: Generated<Date>;
+}
+
 // Refined Zone Tables
 
 export interface RefinedWorkFeatureRunsTable {
@@ -98,6 +106,7 @@ export interface Database {
   raw_list_items: RawListItemsTable;
   raw_work_pages: RawWorkPagesTable;
   raw_work_parse_results: RawWorkParseResultsTable;
+  raw_work_enrichments: RawWorkEnrichmentsTable;
 
   // Refined Zone
   refined_work_feature_runs: RefinedWorkFeatureRunsTable;
@@ -119,6 +128,9 @@ export type NewRawWorkPage = Insertable<RawWorkPagesTable>;
 
 export type RawWorkParseResult = Selectable<RawWorkParseResultsTable>;
 export type NewRawWorkParseResult = Insertable<RawWorkParseResultsTable>;
+
+export type RawWorkEnrichment = Selectable<RawWorkEnrichmentsTable>;
+export type NewRawWorkEnrichment = Insertable<RawWorkEnrichmentsTable>;
 
 export type Work = Selectable<WorksTable>;
 export type NewWork = Insertable<WorksTable>;

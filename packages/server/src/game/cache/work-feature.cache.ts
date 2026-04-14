@@ -120,4 +120,4 @@ export class WorkFeatureCache implements OnModuleInit {
   }
 }
 
-export const DEFAULT_ABSENT = 0.05;
+export const DEFAULT_ABSENT = 0.5;

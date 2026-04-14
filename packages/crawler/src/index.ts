@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 import 'dotenv/config';
+import { readFile } from 'node:fs/promises';
 import { Command } from 'commander';
 import { RidiGenre, RidiOrder, RidiListCrawler, type ListItem } from './crawlers/ridi/ridi-list.crawler';
 import { RidiCrawler } from './crawlers/ridi/ridi.crawler';
 import { RidiParser } from './crawlers/ridi/ridi.parser';
 import { ListValidator } from './validators/list-validator';
 import { Publisher } from './refiners/publisher';
+import { EnrichmentImportSchema } from './schemas/enrichment.schema';
 import { closeDb, db } from './database/kysely';
 
 const program = new Command();
@@ -281,6 +283,112 @@ program
 
     await closeDb();
     console.log('\n=== Pipeline Complete ===');
+  });
+
+program
+  .command('enrich:list')
+  .description('List works that have no enrichment data')
+  .option('--limit <limit>', 'Limit number of results')
+  .action(async (options) => {
+    try {
+      const query = db
+        .selectFrom('raw_work_parse_results')
+        .leftJoin(
+          'raw_work_enrichments',
+          'raw_work_enrichments.external_id',
+          'raw_work_parse_results.external_id'
+        )
+        .select([
+          'raw_work_parse_results.external_id',
+          'raw_work_parse_results.title',
+          'raw_work_parse_results.author',
+          'raw_work_parse_results.keywords',
+          db.fn.count('raw_work_enrichments.id').as('enrichment_count'),
+        ])
+        .where('raw_work_parse_results.title', 'is not', null)
+        .groupBy([
+          'raw_work_parse_results.external_id',
+          'raw_work_parse_results.title',
+          'raw_work_parse_results.author',
+          'raw_work_parse_results.keywords',
+        ])
+        .having(db.fn.count('raw_work_enrichments.id'), '=', 0)
+        .orderBy('raw_work_parse_results.external_id');
+
+      const results = options.limit
+        ? await query.limit(parseInt(options.limit, 10)).execute()
+        : await query.execute();
+
+      console.log(`\n=== Works without enrichment: ${results.length} ===\n`);
+
+      for (const r of results) {
+        const kwCount = r.keywords?.length ?? 0;
+        console.log(
+          `  ${r.external_id}  ${r.title}  (${r.author ?? 'unknown'})  keywords: ${kwCount}`
+        );
+      }
+
+      if (results.length === 0) {
+        console.log('  All works have enrichment data.');
+      }
+    } finally {
+      await closeDb();
+    }
+  });
+
+program
+  .command('enrich:import')
+  .description('Import enrichment data from JSON file')
+  .requiredOption('-f, --file <path>', 'Path to JSON file')
+  .action(async (options) => {
+    try {
+      const raw = await readFile(options.file, 'utf-8');
+      const parsed = EnrichmentImportSchema.safeParse(JSON.parse(raw));
+
+      if (!parsed.success) {
+        console.error('Validation failed:');
+        for (const issue of parsed.error.issues) {
+          console.error(`  [${issue.path.join('.')}] ${issue.message}`);
+        }
+        process.exit(1);
+      }
+
+      const { works } = parsed.data;
+      let inserted = 0;
+      let updated = 0;
+
+      for (const work of works) {
+        const exists = await db
+          .selectFrom('raw_work_enrichments')
+          .select('id')
+          .where('external_id', '=', work.external_id)
+          .executeTakeFirst();
+
+        const tags = work.tags.length > 0 ? work.tags : null;
+        const negativeTags = work.negative_tags.length > 0 ? work.negative_tags : null;
+
+        if (exists) {
+          await db
+            .updateTable('raw_work_enrichments')
+            .set({ tags, negative_tags: negativeTags })
+            .where('id', '=', exists.id)
+            .execute();
+          console.log(`  Updated: ${work.external_id} (${work.tags.length} tags, ${work.negative_tags.length} negative)`);
+          updated++;
+        } else {
+          await db
+            .insertInto('raw_work_enrichments')
+            .values({ external_id: work.external_id, tags, negative_tags: negativeTags })
+            .execute();
+          console.log(`  Imported: ${work.external_id} (${work.tags.length} tags, ${work.negative_tags.length} negative)`);
+          inserted++;
+        }
+      }
+
+      console.log(`\nDone: ${inserted} inserted, ${updated} updated`);
+    } finally {
+      await closeDb();
+    }
   });
 
 program.parse();
