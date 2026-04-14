@@ -84,18 +84,18 @@
   font-size: 1.1rem;
   font-weight: 700;
   font-family: inherit;
-  color: #1a1a2e;
-  background: linear-gradient(135deg, #f5c542, #ff8a5c);
+  color: #fff;
+  background: linear-gradient(135deg, #6c3ce0, #8b5cf6);
   border: none;
   border-radius: 50px;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 20px rgba(245, 197, 66, 0.4);
+  box-shadow: 0 4px 20px rgba(108, 60, 224, 0.4);
 }
 
 .restartButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 28px rgba(245, 197, 66, 0.5);
+  box-shadow: 0 6px 28px rgba(108, 60, 224, 0.55);
 }
 
 .restartButton:active {

@@ -111,53 +111,26 @@
   font-size: 1.05rem;
   font-weight: 600;
   font-family: inherit;
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a1a2e;
   border: none;
   border-radius: 14px;
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.15s, box-shadow 0.15s;
 }
 
 .btn:hover:not(:disabled) {
-  transform: translateY(-2px);
+  opacity: 0.75;
 }
 
 .btn:active:not(:disabled) {
-  transform: translateY(0);
+  opacity: 0.6;
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
-}
-
-.btnYes {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(74, 222, 128, 0.3);
-}
-
-.btnYes:hover:not(:disabled) {
-  box-shadow: 0 6px 22px rgba(74, 222, 128, 0.45);
-}
-
-.btnNo {
-  background: linear-gradient(135deg, #f87171, #ef4444);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(248, 113, 113, 0.3);
-}
-
-.btnNo:hover:not(:disabled) {
-  box-shadow: 0 6px 22px rgba(248, 113, 113, 0.45);
-}
-
-.btnMaybe {
-  background: linear-gradient(135deg, #a78bfa, #8b5cf6);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(167, 139, 250, 0.3);
-}
-
-.btnMaybe:hover:not(:disabled) {
-  box-shadow: 0 6px 22px rgba(167, 139, 250, 0.45);
 }
 
 @keyframes slideIn {

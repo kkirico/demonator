@@ -1,156 +1,23 @@
 .cat {
-  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.3));
+  justify-content: center;
+  filter: drop-shadow(0 8px 32px rgba(0, 0, 0, 0.25));
 }
 
-.cat.large {
-  --cat-size: 180px;
-}
-
-.cat.medium {
-  --cat-size: 140px;
-}
-
-.ears {
-  display: flex;
-  justify-content: space-between;
-  width: calc(var(--cat-size) * 0.7);
-  margin-bottom: calc(var(--cat-size) * -0.08);
-  position: relative;
-  z-index: 1;
-}
-
-.ear {
-  width: calc(var(--cat-size) * 0.28);
-  height: calc(var(--cat-size) * 0.32);
-  background: #f5c542;
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-}
-
-.ear::after {
-  content: '';
-  position: absolute;
-  width: calc(var(--cat-size) * 0.16);
-  height: calc(var(--cat-size) * 0.18);
-  background: #ffb6c1;
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  top: calc(var(--cat-size) * 0.08);
-}
-
-.ear.left::after {
-  left: calc(var(--cat-size) * 0.06);
-}
-
-.ear.right::after {
-  right: calc(var(--cat-size) * 0.06);
-  left: auto;
-}
-
-.face {
+.image {
   width: var(--cat-size);
-  height: calc(var(--cat-size) * 0.85);
-  background: #f5c542;
-  border-radius: 50% 50% 45% 45%;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
 }
 
-.eyes {
-  display: flex;
-  gap: calc(var(--cat-size) * 0.2);
-  margin-bottom: calc(var(--cat-size) * 0.06);
+.large {
+  --cat-size: 220px;
 }
 
-.eye {
-  width: calc(var(--cat-size) * 0.18);
-  height: calc(var(--cat-size) * 0.2);
-  background: #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #333;
-}
-
-.pupil {
-  width: calc(var(--cat-size) * 0.1);
-  height: calc(var(--cat-size) * 0.12);
-  background: #333;
-  border-radius: 50%;
-  position: relative;
-}
-
-.pupil::after {
-  content: '';
-  position: absolute;
-  width: calc(var(--cat-size) * 0.035);
-  height: calc(var(--cat-size) * 0.035);
-  background: #fff;
-  border-radius: 50%;
-  top: calc(var(--cat-size) * 0.02);
-  right: calc(var(--cat-size) * 0.015);
-}
-
-.nose {
-  width: calc(var(--cat-size) * 0.08);
-  height: calc(var(--cat-size) * 0.06);
-  background: #ffb6c1;
-  clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
-}
-
-.mouth {
-  width: calc(var(--cat-size) * 0.12);
-  height: calc(var(--cat-size) * 0.04);
-  border-bottom: 2px solid #333;
-  border-radius: 0 0 50% 50%;
-  margin-top: 2px;
-}
-
-.whiskers {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-}
-
-.whisker {
-  position: absolute;
-  width: calc(var(--cat-size) * 0.3);
-  height: 2px;
-  background: #555;
-  top: 58%;
-}
-
-.wLeft1 {
-  left: calc(var(--cat-size) * -0.15);
-  transform: rotate(-10deg);
-}
-
-.wLeft2 {
-  left: calc(var(--cat-size) * -0.15);
-  top: 63%;
-  transform: rotate(5deg);
-}
-
-.wRight1 {
-  right: calc(var(--cat-size) * -0.15);
-  left: auto;
-  transform: rotate(10deg);
-}
-
-.wRight2 {
-  right: calc(var(--cat-size) * -0.15);
-  left: auto;
-  top: 63%;
-  transform: rotate(-5deg);
+.medium {
+  --cat-size: 160px;
 }
 
 .animated {

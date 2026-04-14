@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CatCharacter } from './CatCharacter';
+import { SpeechBubble } from './SpeechBubble';
 import styles from './StartScreen.module.css';
 
 interface StartScreenProps {
@@ -25,16 +26,22 @@ export function StartScreen({ onStart }: StartScreenProps) {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <h1 className={styles.title}>
-          <span className={styles.titleMain}>Demonator</span>
-          <span className={styles.titleSub}>웹소설 스무고개</span>
-        </h1>
+        <h1 className={styles.title}>Demonator</h1>
+
+        <SpeechBubble direction="bottom">
+          <p className={styles.greeting}>
+            안녕하세요!
+            <br />
+            당신이 생각하는 웹소설을 맞춰볼게요!
+            <br />
+            함께 작품을 찾아볼까요?
+          </p>
+        </SpeechBubble>
+
         <div className={styles.character}>
           <CatCharacter size="large" animated />
         </div>
-        <p className={styles.description}>
-          생각하고 있는 웹소설을 맞춰볼게요!
-        </p>
+
         <button
           className={styles.startButton}
           onClick={handleStart}
@@ -42,6 +49,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
         >
           {loading ? '준비 중...' : '시작하기'}
         </button>
+
         {error && <p className={styles.error}>{error}</p>}
       </div>
     </div>

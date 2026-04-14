@@ -88,14 +88,14 @@ export function GameScreen({
               </SpeechBubble>
               <div className={styles.guessButtons}>
                 <button
-                  className={`${styles.btn} ${styles.btnYes}`}
+                  className={styles.btn}
                   onClick={() => handleGuess(true)}
                   disabled={loading}
                 >
                   맞아요!
                 </button>
                 <button
-                  className={`${styles.btn} ${styles.btnNo}`}
+                  className={styles.btn}
                   onClick={() => handleGuess(false)}
                   disabled={loading}
                 >
@@ -110,21 +110,21 @@ export function GameScreen({
               </SpeechBubble>
               <div className={styles.answerButtons}>
                 <button
-                  className={`${styles.btn} ${styles.btnYes}`}
+                  className={styles.btn}
                   onClick={() => handleAnswer('yes')}
                   disabled={loading}
                 >
                   예
                 </button>
                 <button
-                  className={`${styles.btn} ${styles.btnNo}`}
+                  className={styles.btn}
                   onClick={() => handleAnswer('no')}
                   disabled={loading}
                 >
                   아니오
                 </button>
                 <button
-                  className={`${styles.btn} ${styles.btnMaybe}`}
+                  className={styles.btn}
                   onClick={() => handleAnswer('maybe')}
                   disabled={loading}
                 >
