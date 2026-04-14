@@ -26,6 +26,8 @@ export interface WorkDTO {
   title: string;
   author: string | null;
   thumbnailUrl: string | null;
+  platform: string | null;
+  externalId: string | null;
 }
 
 export interface StartResponse {

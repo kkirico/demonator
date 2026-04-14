@@ -200,12 +200,16 @@ export class GameEngine {
     title: string;
     author: string | null;
     thumbnailUrl: string | null;
+    platform: string | null;
+    externalId: string | null;
   }): WorkDTO {
     return {
       id: work.id,
       title: work.title,
       author: work.author,
       thumbnailUrl: work.thumbnailUrl,
+      platform: work.platform,
+      externalId: work.externalId,
     };
   }
 
