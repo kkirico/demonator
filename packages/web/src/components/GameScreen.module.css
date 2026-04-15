@@ -40,6 +40,12 @@
   flex-shrink: 0;
 }
 
+.characterImg {
+  width: 200px;
+  height: auto;
+  object-fit: contain;
+}
+
 .interactionSide {
   display: flex;
   flex-direction: column;
@@ -61,15 +67,50 @@
 }
 
 .questionCard {
+  position: relative;
   width: 380px;
   height: 80px;
   display: flex;
   align-items: center;
   padding: 0 28px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  backdrop-filter: blur(8px);
+  background: rgba(230, 240, 255, 0.08);
+  border: 1px solid #4DA3FF;
+}
+
+.cornerTL,
+.cornerTR,
+.cornerBL,
+.cornerBR {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: #4DA3FF;
+  border-style: solid;
+  pointer-events: none;
+}
+
+.cornerTL {
+  top: -2px;
+  left: -2px;
+  border-width: 2px 0 0 2px;
+}
+
+.cornerTR {
+  top: -2px;
+  right: -2px;
+  border-width: 2px 2px 0 0;
+}
+
+.cornerBL {
+  bottom:-2px;
+  left: -2px;
+  border-width: 0 0 2px 2px;
+}
+
+.cornerBR {
+  bottom: -2px;
+  right: -2px;
+  border-width: 0 2px 2px 0;
 }
 
 .questionText {
@@ -141,6 +182,7 @@
 }
 
 .answerBtn {
+  position: relative;
   width: 380px;
   height: 48px;
   display: flex;
@@ -150,26 +192,52 @@
   font-weight: 600;
   font-family: inherit;
   color: rgba(255, 255, 255, 0.85);
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 10px;
+  background: transparent;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
-}
-
-.answerBtn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.25);
-}
-
-.answerBtn:active:not(:disabled) {
-  background: rgba(255, 255, 255, 0.15);
 }
 
 .answerBtn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.answerYes {
+  border: 1px solid #4DA3FF;
+  background: rgba(77, 163, 255, 0.08);
+  color: #4DA3FF;
+}
+
+.answerYes:hover:not(:disabled) {
+  background: rgba(77, 163, 255, 0.14);
+  border-color: rgba(77, 163, 255, 0.6);
+}
+
+.answerNo {
+  border: 1px solid #7B68EE;
+  background: rgba(123, 104, 238, 0.08);
+  color: #7B68EE;
+}
+
+.answerNo:hover:not(:disabled) {
+  background: rgba(123, 104, 238, 0.14);
+  border-color: rgba(123, 104, 238, 0.6);
+}
+
+.answerMaybe {
+  border: 1px solid #999;
+  background: rgba(153, 153, 153, 0.08);
+  color: #999;
+}
+
+.answerMaybe:hover:not(:disabled) {
+  background: rgba(153, 153, 153, 0.1);
+  border-color: rgba(153, 153, 153, 0.45);
+}
+
+.cYes { border-color: #4DA3FF; }
+.cNo { border-color: #7B68EE; }
+.cMaybe { border-color: #999; }
 
 .btn {
   padding: 14px 32px;
